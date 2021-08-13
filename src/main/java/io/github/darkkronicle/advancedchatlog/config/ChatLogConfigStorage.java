@@ -1,4 +1,4 @@
-package io.github.darkkronicle.acmoduletemplate.config;
+package io.github.darkkronicle.advancedchatlog.config;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.config.options.ConfigString;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import io.github.darkkronicle.acmoduletemplate.ACModuleTemplate;
+import io.github.darkkronicle.advancedchatlog.AdvancedChatLog;
 import io.github.darkkronicle.advancedchatcore.config.ConfigStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,9 +21,9 @@ import java.util.List;
 
 
 @Environment(EnvType.CLIENT)
-public class ModuleConfigStorage implements IConfigHandler {
+public class ChatLogConfigStorage implements IConfigHandler {
 
-    public static final String CONFIG_FILE_NAME = ACModuleTemplate.MOD_ID + ".json";
+    public static final String CONFIG_FILE_NAME = AdvancedChatLog.MOD_ID + ".json";
     private static final int CONFIG_VERSION = 1;
 
     public static class General {
@@ -31,7 +31,7 @@ public class ModuleConfigStorage implements IConfigHandler {
         public static final String NAME = "general";
 
         public static String translate(String key) {
-            return StringUtils.translate("advancedchat.module.config.general." + key);
+            return StringUtils.translate("advancedchatlog.config.general." + key);
         }
 
         public final static ConfigStorage.SaveableConfig<ConfigString> STRING_STUFF = ConfigStorage.SaveableConfig.fromConfig("string_stuff",

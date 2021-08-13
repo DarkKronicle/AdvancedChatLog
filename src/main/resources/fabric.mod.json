@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
-  "id": "acmoduletemplate",
+  "id": "advancedchatlog",
   "version": "${version}",
-  "name": "AdvancedChatModuleTemplate",
-  "description": "A template for an AdvancedChat Module",
+  "name": "AdvancedChatLog",
+  "description": "An easy way to view and filter through many chat messages.",
   "authors": [
     "DarkKronicle"
   ],
   "contact": {
-    "sources": "https://github.com/DarkKronicle/AdvancedChat",
+    "sources": "https://github.com/DarkKronicle/AdvancedChatLog",
     "discord": "https://discord.gg/WnaE3uZxDA"
   },
   "license": "MPL-v2",
-  "icon": "assets/acmoduletemplate/icon.png",
+  "icon": "assets/advancedchatlog/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "io.github.darkkronicle.acmoduletemplate.ACModuleTemplate"
+      "io.github.darkkronicle.advancedchatlog.AdvancedChatLog"
     ]
   },
   "mixins": [
-    "acmoduletemplate.mixins.json"
+    "advancedchatlog.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.8.9+build.204",
