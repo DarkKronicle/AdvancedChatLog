@@ -1,3 +1,3 @@
-# AdvancedChatModuleTemplate
+# AdvancedChatLog
 
-This repository serves as a way to view use cases of AdvancedChatCore's code, and allow for easy module creation using this repository as a base. To get started clone the project and rename all the necessary files.
+AdvancedChatLog is an AdvancedChat module providing useful utilities to look through many chat messages at once and filter through them.
