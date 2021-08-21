@@ -7,6 +7,7 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
+import fi.dy.masa.malilib.config.options.ConfigInteger;
 import fi.dy.masa.malilib.config.options.ConfigString;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -34,15 +35,11 @@ public class ChatLogConfigStorage implements IConfigHandler {
             return StringUtils.translate("advancedchatlog.config.general." + key);
         }
 
-        public final static ConfigStorage.SaveableConfig<ConfigString> STRING_STUFF = ConfigStorage.SaveableConfig.fromConfig("string_stuff",
-                new ConfigString(translate("string_stuff"), "Very cool string stuff", translate("info.string_stuff")));
-
-        public final static ConfigStorage.SaveableConfig<ConfigBoolean> YES = ConfigStorage.SaveableConfig.fromConfig("yes",
-                new ConfigBoolean(translate("yes"), true, translate("info.yes")));
+        public final static ConfigStorage.SaveableConfig<ConfigInteger> STORED_LINES = ConfigStorage.SaveableConfig.fromConfig("stored_lines",
+                new ConfigInteger(translate("stored_lines"), 1000, 50, 10000, translate("info.storedlines")));
 
         public final static ImmutableList<ConfigStorage.SaveableConfig<? extends IConfigBase>> OPTIONS = ImmutableList.of(
-                STRING_STUFF,
-                YES
+                STORED_LINES
         );
 
     }

@@ -1,9 +1,17 @@
 package io.github.darkkronicle.advancedchatlog;
 
 import fi.dy.masa.malilib.event.InitializationHandler;
+import fi.dy.masa.malilib.gui.GuiBase;
+import io.github.darkkronicle.advancedchatcore.config.gui.GuiConfigHandler;
+import io.github.darkkronicle.advancedchatcore.util.SyncTaskQueue;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public class AdvancedChatLog implements ClientModInitializer {
@@ -14,6 +22,20 @@ public class AdvancedChatLog implements ClientModInitializer {
     public void onInitializeClient() {
         // This will run after AdvancedChatCore's because of load order
         InitializationHandler.getInstance().registerInitializationHandler(new ChatLogInitHandler());
+
+        KeyBinding keyBinding = new KeyBinding(
+                "advancedchatlog.key.openlog",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_U,
+                "advancedchat.category.keys"
+        );
+        KeyBindingHelper.registerKeyBinding(keyBinding);
+        ClientTickEvents.START_CLIENT_TICK.register(s -> {
+            if (keyBinding.wasPressed()) {
+                GuiBase.openGui(new ChatLogScreen());
+            }
+        });
+
     }
 
 }

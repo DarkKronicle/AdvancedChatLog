@@ -3,6 +3,7 @@ package io.github.darkkronicle.advancedchatlog;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import fi.dy.masa.malilib.util.StringUtils;
+import io.github.darkkronicle.advancedchatcore.chat.MessageDispatcher;
 import io.github.darkkronicle.advancedchatlog.config.ChatLogConfigStorage;
 import io.github.darkkronicle.advancedchatcore.chat.ChatHistory;
 import io.github.darkkronicle.advancedchatcore.config.gui.GuiConfigHandler;
@@ -20,9 +21,9 @@ public class ChatLogInitHandler implements IInitializationHandler {
         ));
 
         // Register on new message
-        ChatHistory.getInstance().addOnMessage(chatMessage -> System.out.println("Chat message happened!"));
+        ChatHistory.getInstance().addOnUpdate(ChatLogData.getInstance());
         // Register on the clear
-        ChatHistory.getInstance().addOnClear(() -> System.out.println(ChatLogConfigStorage.General.STRING_STUFF.config.getStringValue()));
+        ChatHistory.getInstance().addOnClear(() -> ChatLogData.getInstance().clear());
     }
 
 }
