@@ -36,7 +36,7 @@ public class ChatLogConfigStorage implements IConfigHandler {
         }
 
         public final static ConfigStorage.SaveableConfig<ConfigInteger> STORED_LINES = ConfigStorage.SaveableConfig.fromConfig("stored_lines",
-                new ConfigInteger(translate("stored_lines"), 1000, 50, 10000, translate("info.storedlines")));
+                new ConfigInteger(translate("stored_lines"), 1000, 50, 10000, translate("info.stored_lines")));
 
         public final static ImmutableList<ConfigStorage.SaveableConfig<? extends IConfigBase>> OPTIONS = ImmutableList.of(
                 STORED_LINES

@@ -1,4 +1,4 @@
-package io.github.darkkronicle.advancedchatlog;
+package io.github.darkkronicle.advancedchatlog.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.EnvType;

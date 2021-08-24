@@ -5,6 +5,8 @@
   "mixins": [
   ],
   "client": [
+    "ChatScreenMixin",
+    "ScreenInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

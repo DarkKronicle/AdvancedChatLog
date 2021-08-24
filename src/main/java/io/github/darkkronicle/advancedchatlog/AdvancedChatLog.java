@@ -2,8 +2,7 @@ package io.github.darkkronicle.advancedchatlog;
 
 import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.gui.GuiBase;
-import io.github.darkkronicle.advancedchatcore.config.gui.GuiConfigHandler;
-import io.github.darkkronicle.advancedchatcore.util.SyncTaskQueue;
+import io.github.darkkronicle.advancedchatlog.gui.ChatLogScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
