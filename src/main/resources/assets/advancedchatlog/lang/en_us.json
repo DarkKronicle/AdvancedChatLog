@@ -2,6 +2,7 @@
   "advancedchatlog.message.regexerror": "RegEx search Error",
   "advancedchatlog.message.none": "No messages found!",
   "advancedchatlog.tab.general": "Chat Log",
+  "advancedchatlog.gui.button.log": "Chat Log",
   "advancedchatlog.config.general.stored_lines": "Stored Lines",
   "advancedchatlog.config.general.info.stored_lines": "The §6maximum§r amount of lines stored in the §aChat Log§r \n§7Excessively large values may result in out-of-memory errors!",
   "advancedchatlog.config.general.showtime": "Show Time",
