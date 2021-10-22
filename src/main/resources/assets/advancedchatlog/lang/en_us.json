@@ -6,5 +6,13 @@
   "advancedchatlog.config.general.stored_lines": "Stored Lines",
   "advancedchatlog.config.general.info.stored_lines": "The §6maximum§r amount of lines stored in the §aChat Log§r \n§7Excessively large values may result in out-of-memory errors!",
   "advancedchatlog.config.general.showtime": "Show Time",
-  "advancedchatlog.config.general.info.showtime": "Whether or not the §6time §ris displayed in the §aChat Log §r \nThe format can be configured in §7General§r"
+  "advancedchatlog.config.general.info.showtime": "Whether or not the §6time §ris displayed in the §aChat Log §r \nThe format can be configured in §7General§r",
+  "advancedchatlog.config.general.saved_lines": "Saved Lines",
+  "advancedchatlog.config.general.info.saved_lines": "Stores a specific amount of lines into a file and loads it when the game starts.",
+  "advancedchatlog.config.general.clean_save": "Clean Saved Lines",
+  "advancedchatlog.config.general.info.clean_save": "Removes some styling information for the saved text such as click events and hover events.\nThis makes the file footprint less.",
+  "advancedchat.config.findtype.literal": "§6Literal",
+  "advancedchat.config.findtype.upperlower": "§eUpper-Lower",
+  "advancedchat.config.findtype.regex": "§bRegEx",
+  "advancedchat.config.findtype.all": "§dAll"
 }

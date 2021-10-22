@@ -1,16 +1,22 @@
 package io.github.darkkronicle.advancedchatlog.gui;
 
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
+import java.util.function.Consumer;
 import net.minecraft.client.font.TextRenderer;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.function.Consumer;
 
 public class TextFieldRunnable extends GuiTextFieldGeneric {
 
     private final Consumer<TextFieldRunnable> onApply;
 
-    public TextFieldRunnable(int x, int y, int width, int height, TextRenderer textRenderer, Consumer<TextFieldRunnable> onApply) {
+    public TextFieldRunnable(
+        int x,
+        int y,
+        int width,
+        int height,
+        TextRenderer textRenderer,
+        Consumer<TextFieldRunnable> onApply
+    ) {
         super(x, y, width, height, textRenderer);
         this.onApply = onApply;
     }

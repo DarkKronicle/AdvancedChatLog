@@ -11,13 +11,26 @@ public class CleanButton extends ButtonWidget {
 
     protected ColorUtil.SimpleColor baseColor;
 
-    public CleanButton(int x, int y, int width, int height, Text message, ColorUtil.SimpleColor baseColor, PressAction onPress) {
+    public CleanButton(
+        int x,
+        int y,
+        int width,
+        int height,
+        Text message,
+        ColorUtil.SimpleColor baseColor,
+        PressAction onPress
+    ) {
         super(x, y, width, height, message, onPress);
         this.baseColor = baseColor;
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderButton(
+        MatrixStack matrices,
+        int mouseX,
+        int mouseY,
+        float delta
+    ) {
         int relMX = mouseX - x;
         int relMY = mouseY - y;
         hovered = relMX >= 0 && relMX <= width && relMY >= 0 && relMY <= height;
@@ -26,7 +39,14 @@ public class CleanButton extends ButtonWidget {
             color = ColorUtil.WHITE.withAlpha(color.alpha());
         }
         RenderUtils.drawRect(x, y, width, height, color.color());
-        drawCenteredText(matrices, MinecraftClient.getInstance().textRenderer, getMessage(), (x + (width / 2)), (y + (height / 2) - 3), ColorUtil.WHITE.color());
+        drawCenteredText(
+            matrices,
+            MinecraftClient.getInstance().textRenderer,
+            getMessage(),
+            (x + (width / 2)),
+            (y + (height / 2) - 3),
+            ColorUtil.WHITE.color()
+        );
         if (this.isHovered()) {
             this.renderTooltip(matrices, mouseX, mouseY);
         }

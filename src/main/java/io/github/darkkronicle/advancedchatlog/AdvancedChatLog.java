@@ -20,13 +20,15 @@ public class AdvancedChatLog implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         // This will run after AdvancedChatCore's because of load order
-        InitializationHandler.getInstance().registerInitializationHandler(new ChatLogInitHandler());
+        InitializationHandler
+            .getInstance()
+            .registerInitializationHandler(new ChatLogInitHandler());
 
         KeyBinding keyBinding = new KeyBinding(
-                "advancedchatlog.key.openlog",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_U,
-                "advancedchat.category.keys"
+            "advancedchatlog.key.openlog",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_U,
+            "advancedchat.category.keys"
         );
         KeyBindingHelper.registerKeyBinding(keyBinding);
         ClientTickEvents.START_CLIENT_TICK.register(s -> {
@@ -34,7 +36,5 @@ public class AdvancedChatLog implements ClientModInitializer {
                 GuiBase.openGui(new ChatLogScreen());
             }
         });
-
     }
-
 }

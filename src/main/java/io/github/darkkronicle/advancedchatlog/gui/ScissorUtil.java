@@ -7,9 +7,7 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class ScissorUtil {
 
-    private ScissorUtil() {
-
-    }
+    private ScissorUtil() {}
 
     public static void applyScissor(int x1, int y1, int x2, int y2) {
         GlStateManager._enableScissorTest();
@@ -19,5 +17,4 @@ public class ScissorUtil {
     public static void resetScissor() {
         GlStateManager._disableScissorTest();
     }
-
 }
