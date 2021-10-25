@@ -1,8 +1,8 @@
 # AdvancedChatLog
 
-AdvancedChatLog is an AdvancedChat module providing useful utilities to look through many chat messages at once and filter through them.
+AdvancedChatLog lets you view and search through the chat history, beyond what Minecraft usually lets you view
 
-Please submit bugs to the [issue tracker](https://github.com/DarkKronicle/AdvancedChatLog/issues). Join the [Discord](https://discord.gg/WnaE3uZxDA) for more help!
+Please submit bugs to the [issue tracker](https://github.com/DarkKronicle/AdvancedChatFilters/issues). Join the [Discord](https://discord.gg/WnaE3uZxDA) for more help!
 
 ## Dependencies
 
@@ -10,10 +10,10 @@ Please submit bugs to the [issue tracker](https://github.com/DarkKronicle/Advanc
 
 ## Features
 
-- Store thousands of messages
-- Search through many messages
-- Smooth scrolling through messages
-- Keep text in chat log on game close and reopen
+- View chat history beyond the vanilla Minecraft limit of 100 lines
+- Search through chat history using RegEx, literal, and case-insensitive (UpperLower)
+- Retain chat history across relaunching
+- Smooth Scrolling
 
 ## Credits n' more
 
