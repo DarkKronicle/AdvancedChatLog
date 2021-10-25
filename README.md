@@ -2,7 +2,7 @@
 
 AdvancedChatLog lets you view and search through the chat history, beyond what Minecraft usually lets you view
 
-Please submit bugs to the [issue tracker](https://github.com/DarkKronicle/AdvancedChatFilters/issues). Join the [Discord](https://discord.gg/WnaE3uZxDA) for more help!
+Please submit bugs to the [issue tracker](https://github.com/DarkKronicle/AdvancedChatLog/issues). Join the [Discord](https://discord.gg/WnaE3uZxDA) for more help!
 
 ## Dependencies
 
