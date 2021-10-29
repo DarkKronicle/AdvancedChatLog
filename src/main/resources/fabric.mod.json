@@ -9,6 +9,7 @@
   ],
   "contact": {
     "sources": "https://github.com/DarkKronicle/AdvancedChatLog",
+    "issues": "https://github.com/DarkKronicle/AdvancedChatLog/issues",
     "discord": "https://discord.gg/WnaE3uZxDA"
   },
   "license": "MPL-v2",
@@ -32,6 +33,9 @@
   "custom": {
     "acmodule": true,
     "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/WnaE3uZxDA"
+      },
       "parent": {
         "id": "advancedchatcore"
       }
