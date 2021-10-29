@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2021 DarkKronicle
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package io.github.darkkronicle.advancedchatlog.gui;
 
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -21,24 +28,21 @@ public class ChatLogScreenSection extends AdvancedChatScreenSection {
     @Override
     public void initGui() {
         ColorUtil.SimpleColor baseColor = ConfigStorage.ChatScreen.COLOR.config.getSimpleColor();
-        String settings = StringUtils.translate(
-            "advancedchatlog.gui.button.log"
-        );
+        String settings = StringUtils.translate("advancedchatlog.gui.button.log");
         int settingsWidth = StringUtils.getStringWidth(settings) + 5;
         int x = MinecraftClient.getInstance().getWindow().getScaledWidth() - 1;
         x -= settingsWidth + 5;
-        io.github.darkkronicle.advancedchatcore.gui.CleanButton settingsButton = new CleanButton(
-            x,
-            MinecraftClient.getInstance().getWindow().getScaledHeight() - 39,
-            settingsWidth,
-            11,
-            baseColor,
-            settings
-        );
+        io.github.darkkronicle.advancedchatcore.gui.CleanButton settingsButton =
+                new CleanButton(
+                        x,
+                        MinecraftClient.getInstance().getWindow().getScaledHeight() - 39,
+                        settingsWidth,
+                        11,
+                        baseColor,
+                        settings);
         getScreen()
-            .addButton(
-                settingsButton,
-                (button, mouseButton) -> GuiBase.openGui(new ChatLogScreen())
-            );
+                .addButton(
+                        settingsButton,
+                        (button, mouseButton) -> GuiBase.openGui(new ChatLogScreen()));
     }
 }

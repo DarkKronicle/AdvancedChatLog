@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2021 DarkKronicle
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package io.github.darkkronicle.advancedchatlog;
 
 import fi.dy.masa.malilib.event.InitializationHandler;
@@ -20,21 +27,20 @@ public class AdvancedChatLog implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         // This will run after AdvancedChatCore's because of load order
-        InitializationHandler
-            .getInstance()
-            .registerInitializationHandler(new ChatLogInitHandler());
+        InitializationHandler.getInstance().registerInitializationHandler(new ChatLogInitHandler());
 
-        KeyBinding keyBinding = new KeyBinding(
-            "advancedchatlog.key.openlog",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_U,
-            "advancedchat.category.keys"
-        );
+        KeyBinding keyBinding =
+                new KeyBinding(
+                        "advancedchatlog.key.openlog",
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_U,
+                        "advancedchat.category.keys");
         KeyBindingHelper.registerKeyBinding(keyBinding);
-        ClientTickEvents.START_CLIENT_TICK.register(s -> {
-            if (keyBinding.wasPressed()) {
-                GuiBase.openGui(new ChatLogScreen());
-            }
-        });
+        ClientTickEvents.START_CLIENT_TICK.register(
+                s -> {
+                    if (keyBinding.wasPressed()) {
+                        GuiBase.openGui(new ChatLogScreen());
+                    }
+                });
     }
 }

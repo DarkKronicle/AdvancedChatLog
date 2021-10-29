@@ -15,6 +15,12 @@ Please submit bugs to the [issue tracker](https://github.com/DarkKronicle/Advanc
 - Retain chat history across relaunching
 - Smooth Scrolling
 
+## Development
+
+To develop, all dependencies should automatically be processed through gradle. To ensure code consistency the hook pre-commit.sh can be used. To install the pre-commit hook run:
+
+`ln -s ../../pre-commit.sh .git/hooks/pre-commit`
+
 ## Credits n' more
 
 Code & Mastermind: DarkKronicle

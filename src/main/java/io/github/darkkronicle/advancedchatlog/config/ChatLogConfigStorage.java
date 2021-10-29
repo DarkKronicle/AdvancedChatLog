@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2021 DarkKronicle
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package io.github.darkkronicle.advancedchatlog.config;
 
 import com.google.common.collect.ImmutableList;
@@ -23,8 +30,7 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class ChatLogConfigStorage implements IConfigHandler {
 
-    public static final String CONFIG_FILE_NAME =
-        AdvancedChatLog.MOD_ID + ".json";
+    public static final String CONFIG_FILE_NAME = AdvancedChatLog.MOD_ID + ".json";
     private static final int CONFIG_VERSION = 1;
 
     public static class General {
@@ -32,82 +38,65 @@ public class ChatLogConfigStorage implements IConfigHandler {
         public static final String NAME = "general";
 
         public static String translate(String key) {
-            return StringUtils.translate(
-                "advancedchatlog.config.general." + key
-            );
+            return StringUtils.translate("advancedchatlog.config.general." + key);
         }
 
-        public static final ConfigStorage.SaveableConfig<ConfigInteger> STORED_LINES = ConfigStorage.SaveableConfig.fromConfig(
-            "stored_lines",
-            new ConfigInteger(
-                translate("stored_lines"),
-                1000,
-                50,
-                10000,
-                translate("info.stored_lines")
-            )
-        );
+        public static final ConfigStorage.SaveableConfig<ConfigInteger> STORED_LINES =
+                ConfigStorage.SaveableConfig.fromConfig(
+                        "stored_lines",
+                        new ConfigInteger(
+                                translate("stored_lines"),
+                                1000,
+                                50,
+                                10000,
+                                translate("info.stored_lines")));
 
-        public static final ConfigStorage.SaveableConfig<ConfigInteger> SAVED_LINES = ConfigStorage.SaveableConfig.fromConfig(
-            "saved_lines",
-            new ConfigInteger(
-                translate("saved_lines"),
-                0,
-                0,
-                10000,
-                translate("info.saved_lines")
-            )
-        );
+        public static final ConfigStorage.SaveableConfig<ConfigInteger> SAVED_LINES =
+                ConfigStorage.SaveableConfig.fromConfig(
+                        "saved_lines",
+                        new ConfigInteger(
+                                translate("saved_lines"),
+                                0,
+                                0,
+                                10000,
+                                translate("info.saved_lines")));
 
-        public static final ConfigStorage.SaveableConfig<ConfigBoolean> CLEAN_SAVE = ConfigStorage.SaveableConfig.fromConfig(
-            "clean_save",
-            new ConfigBoolean(
-                translate("clean_save"),
-                false,
-                translate("info.clean_save")
-            )
-        );
+        public static final ConfigStorage.SaveableConfig<ConfigBoolean> CLEAN_SAVE =
+                ConfigStorage.SaveableConfig.fromConfig(
+                        "clean_save",
+                        new ConfigBoolean(
+                                translate("clean_save"), false, translate("info.clean_save")));
 
-        public static final ImmutableList<ConfigStorage.SaveableConfig<? extends IConfigBase>> OPTIONS = ImmutableList.of(
-            STORED_LINES,
-            SAVED_LINES,
-            CLEAN_SAVE
-        );
+        public static final ImmutableList<ConfigStorage.SaveableConfig<? extends IConfigBase>>
+                OPTIONS = ImmutableList.of(STORED_LINES, SAVED_LINES, CLEAN_SAVE);
     }
 
     public static void loadFromFile() {
-        File configFile = FileUtils
-            .getConfigDirectory()
-            .toPath()
-            .resolve("advancedchat")
-            .resolve(CONFIG_FILE_NAME)
-            .toFile();
-        File savedFile = FileUtils
-            .getConfigDirectory()
-            .toPath()
-            .resolve("advancedchat")
-            .resolve("saved_lines.json")
-            .toFile();
+        File configFile =
+                FileUtils.getConfigDirectory()
+                        .toPath()
+                        .resolve("advancedchat")
+                        .resolve(CONFIG_FILE_NAME)
+                        .toFile();
+        File savedFile =
+                FileUtils.getConfigDirectory()
+                        .toPath()
+                        .resolve("advancedchat")
+                        .resolve("saved_lines.json")
+                        .toFile();
 
-        if (
-            configFile.exists() && configFile.isFile() && configFile.canRead()
-        ) {
+        if (configFile.exists() && configFile.isFile() && configFile.canRead()) {
             JsonElement element = ConfigStorage.parseJsonFile(configFile);
 
             if (element != null && element.isJsonObject()) {
                 JsonObject root = element.getAsJsonObject();
 
                 ConfigStorage.readOptions(
-                    root,
-                    General.NAME,
-                    (List<ConfigStorage.SaveableConfig<?>>) General.OPTIONS
-                );
+                        root,
+                        General.NAME,
+                        (List<ConfigStorage.SaveableConfig<?>>) General.OPTIONS);
 
-                int version = JsonUtils.getIntegerOrDefault(
-                    root,
-                    "configVersion",
-                    0
-                );
+                int version = JsonUtils.getIntegerOrDefault(root, "configVersion", 0);
             }
         }
 
@@ -128,27 +117,17 @@ public class ChatLogConfigStorage implements IConfigHandler {
     }
 
     public static void saveFromFile() {
-        File dir = FileUtils
-            .getConfigDirectory()
-            .toPath()
-            .resolve("advancedchat")
-            .toFile();
+        File dir = FileUtils.getConfigDirectory().toPath().resolve("advancedchat").toFile();
 
         if ((dir.exists() && dir.isDirectory()) || dir.mkdirs()) {
             JsonObject root = new JsonObject();
 
             ConfigStorage.writeOptions(
-                root,
-                General.NAME,
-                (List<ConfigStorage.SaveableConfig<?>>) General.OPTIONS
-            );
+                    root, General.NAME, (List<ConfigStorage.SaveableConfig<?>>) General.OPTIONS);
 
             root.add("config_version", new JsonPrimitive(CONFIG_VERSION));
 
-            ConfigStorage.writeJsonToFile(
-                root,
-                new File(dir, CONFIG_FILE_NAME)
-            );
+            ConfigStorage.writeJsonToFile(root, new File(dir, CONFIG_FILE_NAME));
 
             OutputStreamWriter writer = null;
 

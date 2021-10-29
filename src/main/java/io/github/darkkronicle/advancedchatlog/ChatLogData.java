@@ -1,8 +1,14 @@
+/*
+ * Copyright (C) 2021 DarkKronicle
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package io.github.darkkronicle.advancedchatlog;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import io.github.darkkronicle.advancedchatcore.chat.ChatMessage;
 import io.github.darkkronicle.advancedchatcore.interfaces.IChatMessageProcessor;
 import io.github.darkkronicle.advancedchatlog.config.ChatLogConfigStorage;
@@ -22,8 +28,7 @@ public class ChatLogData implements IChatMessageProcessor {
 
     private static final ChatLogData INSTANCE = new ChatLogData();
 
-    @Getter
-    private List<LogChatMessage> messages = new ArrayList<>();
+    @Getter private List<LogChatMessage> messages = new ArrayList<>();
 
     private ChatLogData() {}
 
@@ -49,13 +54,10 @@ public class ChatLogData implements IChatMessageProcessor {
         if (type != UpdateType.NEW) {
             return;
         }
-        int width =
-            MinecraftClient.getInstance().getWindow().getScaledWidth() - 20;
+        int width = MinecraftClient.getInstance().getWindow().getScaledWidth() - 20;
         add(message.shallowClone(width));
-        while (
-            messages.size() >
-            ChatLogConfigStorage.General.STORED_LINES.config.getIntegerValue()
-        ) {
+        while (messages.size()
+                > ChatLogConfigStorage.General.STORED_LINES.config.getIntegerValue()) {
             messages.remove(messages.size() - 1);
         }
     }
@@ -69,11 +71,7 @@ public class ChatLogData implements IChatMessageProcessor {
         int lines = ChatLogConfigStorage.General.STORED_LINES.config.getIntegerValue();
         LogChatMessageSerializer serializer = new LogChatMessageSerializer();
         List<LogChatMessage> messages = new ArrayList<>();
-        for (
-            int i = 0;
-            i < lines && i < ChatLogData.getInstance().getMessages().size();
-            i++
-        ) {
+        for (int i = 0; i < lines && i < ChatLogData.getInstance().getMessages().size(); i++) {
             messages.add(0, ChatLogData.getInstance().getMessages().get(i));
         }
         JsonArray array = new JsonArray();
