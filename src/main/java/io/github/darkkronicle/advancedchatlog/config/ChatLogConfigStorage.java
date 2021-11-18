@@ -19,6 +19,7 @@ import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import io.github.darkkronicle.advancedchatcore.config.ConfigStorage;
+import io.github.darkkronicle.advancedchatcore.config.SaveableConfig;
 import io.github.darkkronicle.advancedchatlog.AdvancedChatLog;
 import io.github.darkkronicle.advancedchatlog.ChatLogData;
 import java.io.File;
@@ -41,8 +42,8 @@ public class ChatLogConfigStorage implements IConfigHandler {
             return StringUtils.translate("advancedchatlog.config.general." + key);
         }
 
-        public static final ConfigStorage.SaveableConfig<ConfigInteger> STORED_LINES =
-                ConfigStorage.SaveableConfig.fromConfig(
+        public static final SaveableConfig<ConfigInteger> STORED_LINES =
+                SaveableConfig.fromConfig(
                         "stored_lines",
                         new ConfigInteger(
                                 translate("stored_lines"),
@@ -51,8 +52,8 @@ public class ChatLogConfigStorage implements IConfigHandler {
                                 10000,
                                 translate("info.stored_lines")));
 
-        public static final ConfigStorage.SaveableConfig<ConfigInteger> SAVED_LINES =
-                ConfigStorage.SaveableConfig.fromConfig(
+        public static final SaveableConfig<ConfigInteger> SAVED_LINES =
+                SaveableConfig.fromConfig(
                         "saved_lines",
                         new ConfigInteger(
                                 translate("saved_lines"),
@@ -61,14 +62,14 @@ public class ChatLogConfigStorage implements IConfigHandler {
                                 10000,
                                 translate("info.saved_lines")));
 
-        public static final ConfigStorage.SaveableConfig<ConfigBoolean> CLEAN_SAVE =
-                ConfigStorage.SaveableConfig.fromConfig(
+        public static final SaveableConfig<ConfigBoolean> CLEAN_SAVE =
+                SaveableConfig.fromConfig(
                         "clean_save",
                         new ConfigBoolean(
                                 translate("clean_save"), false, translate("info.clean_save")));
 
-        public static final ImmutableList<ConfigStorage.SaveableConfig<? extends IConfigBase>>
-                OPTIONS = ImmutableList.of(STORED_LINES, SAVED_LINES, CLEAN_SAVE);
+        public static final ImmutableList<SaveableConfig<? extends IConfigBase>> OPTIONS =
+                ImmutableList.of(STORED_LINES, SAVED_LINES, CLEAN_SAVE);
     }
 
     public static void loadFromFile() {
@@ -92,9 +93,7 @@ public class ChatLogConfigStorage implements IConfigHandler {
                 JsonObject root = element.getAsJsonObject();
 
                 ConfigStorage.readOptions(
-                        root,
-                        General.NAME,
-                        (List<ConfigStorage.SaveableConfig<?>>) General.OPTIONS);
+                        root, General.NAME, (List<SaveableConfig<?>>) General.OPTIONS);
 
                 int version = JsonUtils.getIntegerOrDefault(root, "configVersion", 0);
             }
@@ -123,7 +122,7 @@ public class ChatLogConfigStorage implements IConfigHandler {
             JsonObject root = new JsonObject();
 
             ConfigStorage.writeOptions(
-                    root, General.NAME, (List<ConfigStorage.SaveableConfig<?>>) General.OPTIONS);
+                    root, General.NAME, (List<SaveableConfig<?>>) General.OPTIONS);
 
             root.add("config_version", new JsonPrimitive(CONFIG_VERSION));
 

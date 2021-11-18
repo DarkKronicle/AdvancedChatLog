@@ -9,7 +9,7 @@ package io.github.darkkronicle.advancedchatlog.mixin;
 
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.StringUtils;
-import io.github.darkkronicle.advancedchatcore.util.ColorUtil;
+import io.github.darkkronicle.advancedchatcore.util.Color;
 import io.github.darkkronicle.advancedchatcore.util.RawText;
 import io.github.darkkronicle.advancedchatlog.gui.ChatLogScreen;
 import io.github.darkkronicle.advancedchatlog.gui.CleanButton;
@@ -33,8 +33,7 @@ public class ChatScreenMixin {
         String chatlog = StringUtils.translate("advancedchat.gui.button.chatlog");
         int chatlogWidth = StringUtils.getStringWidth(chatlog) + 5;
         int x = client.getWindow().getScaledWidth() - 3 - chatlogWidth;
-        ColorUtil.SimpleColor color =
-                new ColorUtil.SimpleColor(client.options.getTextBackgroundColor(-2147483648));
+        Color color = new Color(client.options.getTextBackgroundColor(-2147483648));
         CleanButton openChatLog =
                 new CleanButton(
                         x,

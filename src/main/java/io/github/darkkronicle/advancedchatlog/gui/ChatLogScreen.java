@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.util.StringUtils;
 import io.github.darkkronicle.advancedchatcore.chat.ChatMessage;
-import io.github.darkkronicle.advancedchatcore.util.ColorUtil;
+import io.github.darkkronicle.advancedchatcore.util.Colors;
 import io.github.darkkronicle.advancedchatcore.util.EasingMethod;
 import io.github.darkkronicle.advancedchatcore.util.FindType;
 import io.github.darkkronicle.advancedchatcore.util.FluidText;
@@ -149,7 +149,10 @@ public class ChatLogScreen extends GuiBase {
                                         StringUtils.translate("advancedchatlog.message.regexerror"),
                                         Style.EMPTY.withColor(
                                                 TextColor.fromFormatting(Formatting.RED))));
-                text.append(RawText.withColor(" " + e.getDescription(), ColorUtil.GRAY));
+                text.append(
+                        RawText.withColor(
+                                " " + e.getDescription(),
+                                Colors.getInstance().getColorOrWhite("gray")));
                 ChatMessage message =
                         ChatMessage.builder().displayText(text).originalText(text).build();
                 sorted.add(new LogChatMessage(message));
@@ -250,7 +253,7 @@ public class ChatLogScreen extends GuiBase {
                     line.getText(),
                     10,
                     height - y - 40 - fontHeight,
-                    ColorUtil.WHITE.color());
+                    Colors.getInstance().getColorOrWhite("white").color());
             y += lineHeight;
         }
         ScissorUtil.resetScissor();
@@ -260,7 +263,7 @@ public class ChatLogScreen extends GuiBase {
                 (scrollLine + 1) + "/" + renderLines.size(),
                 width / 2,
                 height - 28,
-                ColorUtil.WHITE.color());
+                Colors.getInstance().getColorOrWhite("white").color());
         renderTextHoverEffect(matrixStack, getHoverStyle(mouseX, mouseY), mouseX, mouseY);
     }
 
