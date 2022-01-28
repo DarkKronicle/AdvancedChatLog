@@ -15,6 +15,11 @@ archivesBaseName = project.archives_base_name
 version = "${project.minecraft_version}-${project.mod_version}"
 group = project.maven_group
 
+Properties additionalProperties = new Properties()
+if (file("extra.properties").exists()) {
+	additionalProperties.load(file("extra.properties").newReader())
+}
+
 minecraft {
 }
 
