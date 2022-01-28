@@ -68,8 +68,8 @@ public class ChatLogScreen extends GuiBase {
         try {
             if (SearchUtils.isMatch(
                     message.getDisplayText().getString(), search.getText(), findType)) {
-                for (int i = message.getLineCount() - 1; i >= 0; i--) {
-                    renderLines.add(message.getLines().get(i));
+                for (int i = 0; i < message.getLineCount(); i++) {
+                    renderLines.add(0, message.getLines().get(i));
                 }
             }
         } catch (PatternSyntaxException e) {
@@ -89,30 +89,31 @@ public class ChatLogScreen extends GuiBase {
                 (textField -> {
                     searchText(textField.getText());
                     return true;
-                }));
+                })
+        );
         searchType = new ButtonGeneric(width / 2 + 72, 6, 70, false, findType.getDisplayName());
         addButton(
                 searchType,
                 ((button, mouseButton) -> {
                     if (mouseButton == 0) {
-                        findType = (FindType) findType.cycle(true);
+                        findType = findType.cycle(true);
                     } else {
-                        findType = (FindType) findType.cycle(false);
+                        findType = findType.cycle(false);
                     }
                     button.setDisplayString(findType.getDisplayName());
                     searchText(search.getText());
                 }));
-        send =
-                new TextFieldRunnable(
-                        2,
-                        height - 15,
-                        width - 4,
-                        12,
-                        textRenderer,
-                        (textFieldRunnable -> {
-                            client.player.sendChatMessage(textFieldRunnable.getText());
-                            textFieldRunnable.setText("");
-                        }));
+        send = new TextFieldRunnable(
+                2,
+                height - 15,
+                width - 4,
+                12,
+                textRenderer,
+                (textFieldRunnable -> {
+                    client.player.sendChatMessage(textFieldRunnable.getText());
+                    textFieldRunnable.setText("");
+                })
+        );
         addTextField(send, null);
         send.setFocused(true);
     }
@@ -122,12 +123,40 @@ public class ChatLogScreen extends GuiBase {
         if (super.onMouseClicked(mouseX, mouseY, mouseButton)) {
             return true;
         }
+        if (hasShiftDown()) {
+            relativeScroll(mouseY);
+            return true;
+        }
         Style style = getHoverStyle(mouseX, mouseY);
         if (style != null) {
             return handleTextClick(style);
         }
         return false;
     }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+            return true;
+        }
+        if (hasShiftDown()) {
+            relativeScroll((int) mouseY);
+            return true;
+        }
+        return false;
+    }
+
+    public void relativeScroll(int y) {
+        // Scroll click
+        int height = client.getWindow().getScaledHeight() - 100;
+        y -= 40;
+        float percent = 1 - Math.max(0, Math.min((float) y / height, 1));
+        int newPix = (int) (percent * (renderLines.size() * (textRenderer.fontHeight + 2)));
+        scrollEnd = newPix;
+        scrollStart = newPix;
+        lastScrollTime = Util.getMeasuringTimeMs();
+    }
+
 
     private void searchText(String contents) {
         if (contents.isEmpty()) {
@@ -143,18 +172,12 @@ public class ChatLogScreen extends GuiBase {
                 }
             } catch (PatternSyntaxException e) {
                 sorted.clear();
-                FluidText text =
-                        new FluidText(
-                                RawText.withStyle(
-                                        StringUtils.translate("advancedchatlog.message.regexerror"),
-                                        Style.EMPTY.withColor(
-                                                TextColor.fromFormatting(Formatting.RED))));
-                text.append(
-                        RawText.withColor(
-                                " " + e.getDescription(),
-                                Colors.getInstance().getColorOrWhite("gray")));
-                ChatMessage message =
-                        ChatMessage.builder().displayText(text).originalText(text).build();
+                FluidText text = new FluidText(RawText.withStyle(
+                        StringUtils.translate("advancedchatlog.message.regexerror"),
+                        Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED)))
+                );
+                text.append(RawText.withColor(" " + e.getDescription(), Colors.getInstance().getColorOrWhite("gray")));
+                ChatMessage message = ChatMessage.builder().displayText(text).originalText(text).build();
                 sorted.add(new LogChatMessage(message));
                 break;
             }
@@ -166,13 +189,11 @@ public class ChatLogScreen extends GuiBase {
         // Don't want jank
         messages = new ArrayList<>(messages);
         if (messages.isEmpty()) {
-            Text text =
-                    RawText.withStyle(
-                            StringUtils.translate("advancedchatlog.message.none"),
-                            Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED)));
-            messages.add(
-                    new LogChatMessage(
-                            ChatMessage.builder().displayText(text).originalText(text).build()));
+            Text text = RawText.withStyle(
+                    StringUtils.translate("advancedchatlog.message.none"),
+                    Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED))
+            );
+            messages.add(new LogChatMessage(ChatMessage.builder().displayText(text).originalText(text).build()));
         }
         renderLines = new ArrayList<>();
         for (LogChatMessage l : messages) {
@@ -186,14 +207,11 @@ public class ChatLogScreen extends GuiBase {
     private void updateScroll() {
         long time = Util.getMeasuringTimeMs();
         // Starting scroll + percent completed
-        currentScroll =
-                scrollStart
-                        + ((scrollEnd - scrollStart)
-                                * (1
-                                        - EasingMethod.Method.SINE.apply(
-                                                1
-                                                        - ((float) time - lastScrollTime)
-                                                                / scrollTimeMs)));
+        currentScroll = scrollStart + (
+                (scrollEnd - scrollStart) * (1 - EasingMethod.Method.SINE.apply(
+                        1 - ((float) time - lastScrollTime) / scrollTimeMs
+                ))
+        );
         int fontHeight = (textRenderer.fontHeight + 2);
         if (currentScroll < 0) {
             // Make sure we can still see at least one line
@@ -263,7 +281,8 @@ public class ChatLogScreen extends GuiBase {
                 (scrollLine + 1) + "/" + renderLines.size(),
                 width / 2,
                 height - 28,
-                Colors.getInstance().getColorOrWhite("white").color());
+                Colors.getInstance().getColorOrWhite("white").color()
+        );
         renderTextHoverEffect(matrixStack, getHoverStyle(mouseX, mouseY), mouseX, mouseY);
     }
 

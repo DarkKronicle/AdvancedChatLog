@@ -9,6 +9,7 @@ package io.github.darkkronicle.advancedchatlog;
 
 import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.gui.GuiBase;
+import io.github.darkkronicle.advancedchatcore.ModuleHandler;
 import io.github.darkkronicle.advancedchatlog.gui.ChatLogScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -27,7 +28,7 @@ public class AdvancedChatLog implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         // This will run after AdvancedChatCore's because of load order
-        InitializationHandler.getInstance().registerInitializationHandler(new ChatLogInitHandler());
+        ModuleHandler.getInstance().registerInitHandler(MOD_ID, 1, new ChatLogInitHandler());
 
         KeyBinding keyBinding =
                 new KeyBinding(

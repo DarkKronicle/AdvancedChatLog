@@ -24,11 +24,11 @@ public class ChatLogInitHandler implements IInitializationHandler {
     public void registerModHandlers() {
         ConfigManager.getInstance()
                 .registerConfigHandler(AdvancedChatLog.MOD_ID, new ChatLogConfigStorage());
-        GuiConfigHandler.getInstance()
-                .addGuiSection(
-                        GuiConfigHandler.createGuiConfigSection(
-                                "advancedchatlog.tab.general",
-                                ChatLogConfigStorage.General.OPTIONS));
+        GuiConfigHandler.getInstance().addTab(GuiConfigHandler.wrapSaveableOptions(
+                "log_general",
+                "advancedchatlog.tab.general",
+                ChatLogConfigStorage.General.OPTIONS
+        ));
 
         // Register on new message
         ChatHistory.getInstance().addOnUpdate(ChatLogData.getInstance());
