@@ -7,46 +7,23 @@
  */
 package io.github.darkkronicle.advancedchatlog;
 
-import fi.dy.masa.malilib.event.InitializationHandler;
-import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.FileUtils;
 import io.github.darkkronicle.advancedchatcore.ModuleHandler;
-import io.github.darkkronicle.advancedchatlog.gui.ChatLogScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
-import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.OnStartupTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
-import org.apache.logging.log4j.core.config.AppenderRef;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.filter.RegexFilter;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.message.Message;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Map;
-import java.util.logging.FileHandler;
 
 @Environment(EnvType.CLIENT)
 public class AdvancedChatLog implements ClientModInitializer {
@@ -61,20 +38,6 @@ public class AdvancedChatLog implements ClientModInitializer {
     public void onInitializeClient() {
         // This will run after AdvancedChatCore's because of load order
         ModuleHandler.getInstance().registerInitHandler(MOD_ID, 1, new ChatLogInitHandler());
-
-        KeyBinding keyBinding =
-                new KeyBinding(
-                        "advancedchatlog.key.openlog",
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_U,
-                        "advancedchat.category.keys");
-        KeyBindingHelper.registerKeyBinding(keyBinding);
-        ClientTickEvents.START_CLIENT_TICK.register(
-                s -> {
-                    if (keyBinding.wasPressed()) {
-                        GuiBase.openGui(new ChatLogScreen());
-                    }
-                });
         setupLogger();
     }
 
@@ -112,6 +75,9 @@ public class AdvancedChatLog implements ClientModInitializer {
     }
 
     public static void logChatMessage(Text text) {
+        if (ChatLogData.isLoading()) {
+            return;
+        }
         String message = text.getString();
         message = "[" + DATE_TIME.format(new Date()) + "] " + message;
         CHAT_LOGGER.info(message);

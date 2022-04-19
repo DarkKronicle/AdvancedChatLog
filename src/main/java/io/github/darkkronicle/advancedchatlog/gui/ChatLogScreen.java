@@ -10,27 +10,37 @@ package io.github.darkkronicle.advancedchatlog.gui;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.util.InfoUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import io.github.darkkronicle.advancedchatcore.chat.ChatMessage;
+import io.github.darkkronicle.advancedchatcore.config.ConfigStorage;
+import io.github.darkkronicle.advancedchatcore.gui.ContextMenu;
 import io.github.darkkronicle.advancedchatcore.util.Colors;
 import io.github.darkkronicle.advancedchatcore.util.EasingMethod;
 import io.github.darkkronicle.advancedchatcore.util.FindType;
 import io.github.darkkronicle.advancedchatcore.util.FluidText;
 import io.github.darkkronicle.advancedchatcore.util.RawText;
 import io.github.darkkronicle.advancedchatcore.util.SearchUtils;
+import io.github.darkkronicle.advancedchatlog.AdvancedChatLog;
 import io.github.darkkronicle.advancedchatlog.ChatLogData;
+import io.github.darkkronicle.advancedchatlog.config.ChatLogConfigStorage;
 import io.github.darkkronicle.advancedchatlog.util.LogChatMessage;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
+import org.apache.logging.log4j.Level;
 
 @Environment(EnvType.CLIENT)
 public class ChatLogScreen extends GuiBase {
@@ -47,8 +57,8 @@ public class ChatLogScreen extends GuiBase {
     /** Last time scroll was updated. Used for smooth scroll. */
     private long lastScrollTime = 0;
 
-    /** Amount of time for scrolling animation. */
-    private int scrollTimeMs = 500;
+    private ContextMenu menu = null;
+    private LogChatMessage message = null;
 
     private List<ChatMessage.AdvancedChatLine> renderLines;
     private GuiTextFieldGeneric search = null;
@@ -62,6 +72,9 @@ public class ChatLogScreen extends GuiBase {
 
     public void add(LogChatMessage message) {
         add(message.getMessage());
+        if (currentScroll > 0) {
+            currentScroll += message.getMessage().getLineCount() * (client.textRenderer.fontHeight + 2);
+        }
     }
 
     public void add(ChatMessage message) {
@@ -121,6 +134,13 @@ public class ChatLogScreen extends GuiBase {
     @Override
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (super.onMouseClicked(mouseX, mouseY, mouseButton)) {
+            return true;
+        }
+        if (mouseButton == 1) {
+            createContextMenu(mouseX, mouseY);
+            return true;
+        }
+        if (menu != null && menu.onMouseClicked(mouseX, mouseY, mouseButton)) {
             return true;
         }
         if (hasShiftDown()) {
@@ -208,8 +228,8 @@ public class ChatLogScreen extends GuiBase {
         long time = Util.getMeasuringTimeMs();
         // Starting scroll + percent completed
         currentScroll = scrollStart + (
-                (scrollEnd - scrollStart) * (1 - EasingMethod.Method.SINE.apply(
-                        1 - ((float) time - lastScrollTime) / scrollTimeMs
+                (scrollEnd - scrollStart) * (1 - ((ConfigStorage.Easing) ChatLogConfigStorage.General.SCROLL_TYPE.config.getOptionListValue()).apply(
+                        1 - ((float) time - lastScrollTime) / ChatLogConfigStorage.General.SCROLL_TIME.config.getIntegerValue()
                 ))
         );
         int fontHeight = (textRenderer.fontHeight + 2);
@@ -234,7 +254,7 @@ public class ChatLogScreen extends GuiBase {
             return true;
         }
         // Update the scroll variables
-        scrollEnd = currentScroll + mouseWheelDelta * 100;
+        scrollEnd = currentScroll + mouseWheelDelta * 10 * ChatLogConfigStorage.General.SCROLL_MULTIPLIER.config.getDoubleValue();
         scrollStart = currentScroll;
         lastScrollTime = Util.getMeasuringTimeMs();
         return true;
@@ -284,6 +304,45 @@ public class ChatLogScreen extends GuiBase {
                 Colors.getInstance().getColorOrWhite("white").color()
         );
         renderTextHoverEffect(matrixStack, getHoverStyle(mouseX, mouseY), mouseX, mouseY);
+        if (menu != null) {
+            menu.render(mouseX, mouseY, true, matrixStack);
+        }
+    }
+
+    public void createContextMenu(int mouseX, int mouseY) {
+        LinkedHashMap<Text, ContextMenu.ContextConsumer> actions = new LinkedHashMap<>();
+        message = getMessage(mouseX, mouseY);
+        if (message != null) {
+            FluidText data = new FluidText();
+            try {
+                data.append(
+                        RawText.withFormatting(message.getMessage().getTime().format(DateTimeFormatter.ofPattern(ConfigStorage.General.TIME_FORMAT.config.getStringValue())), Formatting.AQUA
+                    ));
+            } catch (IllegalArgumentException e) {
+                AdvancedChatLog.LOGGER.log(Level.WARN, "Can't format time for context menu!", e);
+            }
+            if (message.getMessage().getOwner() != null) {
+                data.append(RawText.withFormatting(" - ", Formatting.GRAY));
+                if (message.getMessage().getOwner().getEntry().getDisplayName() != null) {
+                    data.append(new FluidText(message.getMessage().getOwner().getEntry().getDisplayName()));
+                } else {
+                    data.append(RawText.withStyle(message.getMessage().getOwner().getEntry().getProfile().getName(), Style.EMPTY));
+                }
+            }
+            if (!data.getString().isBlank())  {
+                actions.put(data, (x, y) -> {
+                });
+            }
+            actions.put(RawText.withStyle(StringUtils.translate("advancedchatlog.context.copy"), Style.EMPTY), (x, y) -> {
+                MinecraftClient.getInstance().keyboard.setClipboard(message.getMessage().getOriginalText().getString());
+                InfoUtils.printActionbarMessage("advancedchatlog.context.copied");
+            });
+        }
+        actions.put(RawText.withStyle(StringUtils.translate("advancedchatlog.context.clearallmessages"), Style.EMPTY), (x, y) -> {
+            ChatLogData.getInstance().clear();
+            setLines(ChatLogData.getInstance().getMessages());
+        });
+        menu = new ContextMenu(mouseX, mouseY, actions, () -> menu = null);
     }
 
     public Style getHoverStyle(double mouseX, double mouseY) {
@@ -312,4 +371,32 @@ public class ChatLogScreen extends GuiBase {
         }
         return null;
     }
+
+    public LogChatMessage getMessage(double mouseX, double mouseY) {
+        int lineHeight = textRenderer.fontHeight + 2;
+        int lines = (int) Math.ceil((float) (height - 70 - lineHeight) / (lineHeight));
+
+        // Current line scrolled
+        int scrollLine = (int) Math.floor((float) currentScroll / (lineHeight));
+
+        // Offset y for scrolling. Used for partially obstructed lines.
+        int y = -1 * ((int) currentScroll % lineHeight);
+        int height = client.getWindow().getScaledHeight();
+        // Change the perspective of mouseY from where the text started.
+        mouseY = height - mouseY - 40;
+
+        for (int i = scrollLine; i < scrollLine + lines; i++) {
+            if (i >= renderLines.size()) {
+                break;
+            }
+            if (y <= mouseY && y + lineHeight >= mouseY) {
+                ChatMessage.AdvancedChatLine line = renderLines.get(i);
+                return ChatLogData.getInstance().getLogMessage(line.getParent());
+            }
+            y += lineHeight;
+        }
+        return null;
+    }
+
+
 }

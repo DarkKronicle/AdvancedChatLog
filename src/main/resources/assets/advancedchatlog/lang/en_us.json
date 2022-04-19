@@ -5,14 +5,31 @@
   "advancedchatlog.gui.button.log": "Chat Log",
   "advancedchatlog.config.general.stored_lines": "Stored Lines",
   "advancedchatlog.config.general.info.stored_lines": "The §6maximum§r amount of lines stored in the §aChat Log§r \n§7Excessively large values may result in out-of-memory errors!",
+  "advancedchatlog.config.general.only_manual_clear": "Only Manual Clear",
+  "advancedchatlog.config.general.info.only_manual_clear": "If enabled it means that §6F3+D§r and §6disconnecting§r do not apply to §bchat log§r.",
   "advancedchatlog.config.general.showtime": "Show Time",
   "advancedchatlog.config.general.info.showtime": "Whether or not the §6time §ris displayed in the §aChat Log §r \nThe format can be configured in §7General§r",
   "advancedchatlog.config.general.saved_lines": "Saved Lines",
-  "advancedchatlog.config.general.info.saved_lines": "Stores a specific amount of lines into a file and loads it when the game starts.",
+  "advancedchatlog.config.general.info.saved_lines": "Stores a specific amount of lines into a file and loads it §6into chat log§r when the game starts.",
+  "advancedchatlog.config.general.reload_lines": "Reload Lines",
+  "advancedchatlog.config.general.info.reload_lines": "Amount of lines from §6Saved Lines§r to be put back into §6Chat HUD§r.\nWith vanilla chat it can have weird behavior.\nSetting this number big can cause a lot of lag on load.",
+  "advancedchatlog.config.general.scroll_time": "Scroll Time",
+  "advancedchatlog.config.general.info.scroll_time": "Time it takes for the scrolling animation to complete in milliseconds",
+  "advancedchatlog.config.general.scroll_type": "Scroll Type",
+  "advancedchatlog.config.general.info.scroll_type": "Type of function that is applied for scrolling",
+  "advancedchatlog.config.general.scroll_multiplier": "Scroll Multiplier",
+  "advancedchatlog.config.general.info.scroll_multiplier": "The strength of the scroll",
   "advancedchatlog.config.general.clean_save": "Clean Saved Lines",
   "advancedchatlog.config.general.info.clean_save": "Removes some styling information for the saved text such as click events and hover events.\nThis makes the file footprint less.",
   "advancedchat.config.findtype.literal": "§6Literal",
   "advancedchat.config.findtype.upperlower": "§eUpper-Lower",
   "advancedchat.config.findtype.regex": "§bRegEx",
-  "advancedchat.config.findtype.all": "§dAll"
+  "advancedchat.config.findtype.all": "§dAll",
+
+  "advancedchatlog.config.tab.hotkeysgeneral": "Chat Log",
+  "advancedchatlog.config.hotkeys.openlog": "Open Log",
+
+  "advancedchatlog.context.copy": "Copy",
+  "advancedchatlog.context.copied": "Copied",
+  "advancedchatlog.context.clearallmessages": "Clear All Messages"
 }

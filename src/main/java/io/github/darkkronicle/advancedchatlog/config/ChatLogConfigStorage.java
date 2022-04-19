@@ -13,8 +13,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
-import fi.dy.masa.malilib.config.options.ConfigBoolean;
-import fi.dy.masa.malilib.config.options.ConfigInteger;
+import fi.dy.masa.malilib.config.options.*;
+import fi.dy.masa.malilib.hotkeys.KeyAction;
+import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -52,6 +53,42 @@ public class ChatLogConfigStorage implements IConfigHandler {
                                 10000,
                                 translate("info.stored_lines")));
 
+        public static final SaveableConfig<ConfigBoolean> ONLY_MANUAL_CLEAR =
+                SaveableConfig.fromConfig(
+                        "only_manual_clear",
+                        new ConfigBoolean(
+                                translate("only_manual_clear"),
+                                true,
+                                translate("info.only_manual_clear")));
+
+        public static final SaveableConfig<ConfigInteger> SCROLL_TIME =
+                SaveableConfig.fromConfig(
+                        "scroll_time",
+                        new ConfigInteger(
+                                translate("scroll_time"),
+                                200,
+                                0,
+                                2000,
+                                translate("info.scroll_time")));
+
+        public static final SaveableConfig<ConfigOptionList> SCROLL_TYPE =
+                SaveableConfig.fromConfig(
+                        "scroll_type",
+                        new ConfigOptionList(
+                                translate("scroll_type"),
+                                ConfigStorage.Easing.QUART,
+                                translate("info.scroll_time")));
+
+        public static final SaveableConfig<ConfigDouble> SCROLL_MULTIPLIER =
+                SaveableConfig.fromConfig(
+                        "scroll_multiplier",
+                        new ConfigDouble(
+                                translate("scroll_multiplier"),
+                                5,
+                                0,
+                                100,
+                                translate("info.scroll_multiplier")));
+
         public static final SaveableConfig<ConfigInteger> SAVED_LINES =
                 SaveableConfig.fromConfig(
                         "saved_lines",
@@ -62,6 +99,16 @@ public class ChatLogConfigStorage implements IConfigHandler {
                                 10000,
                                 translate("info.saved_lines")));
 
+        public static final SaveableConfig<ConfigInteger> RELOAD_LINES =
+                SaveableConfig.fromConfig(
+                        "reload_lines",
+                        new ConfigInteger(
+                                translate("reload_lines"),
+                                0,
+                                0,
+                                10000,
+                                translate("info.reload_lines")));
+
         public static final SaveableConfig<ConfigBoolean> CLEAN_SAVE =
                 SaveableConfig.fromConfig(
                         "clean_save",
@@ -69,7 +116,26 @@ public class ChatLogConfigStorage implements IConfigHandler {
                                 translate("clean_save"), false, translate("info.clean_save")));
 
         public static final ImmutableList<SaveableConfig<? extends IConfigBase>> OPTIONS =
-                ImmutableList.of(STORED_LINES, SAVED_LINES, CLEAN_SAVE);
+                ImmutableList.of(STORED_LINES, ONLY_MANUAL_CLEAR, SAVED_LINES, RELOAD_LINES, CLEAN_SAVE, SCROLL_TIME, SCROLL_TYPE, SCROLL_MULTIPLIER);
+    }
+
+    public static class Hotkeys {
+        public static final String NAME = "hotkeys";
+
+        public static String translate(String key) {
+            return StringUtils.translate("advancedchatlog.config.hotkeys." + key);
+        }
+
+        public static final SaveableConfig<ConfigHotkey> OPEN_LOG = SaveableConfig.fromConfig("openSettings",
+                new ConfigHotkey(translate("openlog"), "U", KeybindSettings.create(
+                        KeybindSettings.Context.INGAME, KeyAction.PRESS, false, true, false, true
+                ), translate("info.openlog")));
+
+        public static final ImmutableList<ConfigHotkey> HOTKEYS =
+                ImmutableList.of(OPEN_LOG.config);
+
+        public static final ImmutableList<SaveableConfig<? extends IConfigBase>> OPTIONS =
+                ImmutableList.of(OPEN_LOG);
     }
 
     public static void loadFromFile() {
@@ -92,8 +158,8 @@ public class ChatLogConfigStorage implements IConfigHandler {
             if (element != null && element.isJsonObject()) {
                 JsonObject root = element.getAsJsonObject();
 
-                ConfigStorage.readOptions(
-                        root, General.NAME, (List<SaveableConfig<?>>) General.OPTIONS);
+                ConfigStorage.readOptions(root, General.NAME, (List<SaveableConfig<?>>) General.OPTIONS);
+                ConfigStorage.readOptions(root, Hotkeys.NAME, (List<SaveableConfig<?>>) Hotkeys.OPTIONS);
 
                 int version = JsonUtils.getIntegerOrDefault(root, "configVersion", 0);
             }
@@ -121,8 +187,8 @@ public class ChatLogConfigStorage implements IConfigHandler {
         if ((dir.exists() && dir.isDirectory()) || dir.mkdirs()) {
             JsonObject root = new JsonObject();
 
-            ConfigStorage.writeOptions(
-                    root, General.NAME, (List<SaveableConfig<?>>) General.OPTIONS);
+            ConfigStorage.writeOptions(root, General.NAME, (List<SaveableConfig<?>>) General.OPTIONS);
+            ConfigStorage.writeOptions(root, Hotkeys.NAME, (List<SaveableConfig<?>>) Hotkeys.OPTIONS);
 
             root.add("config_version", new JsonPrimitive(CONFIG_VERSION));
 

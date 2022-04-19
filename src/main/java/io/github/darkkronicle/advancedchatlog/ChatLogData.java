@@ -9,7 +9,9 @@ package io.github.darkkronicle.advancedchatlog;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import io.github.darkkronicle.advancedchatcore.chat.ChatHistory;
 import io.github.darkkronicle.advancedchatcore.chat.ChatMessage;
+import io.github.darkkronicle.advancedchatcore.config.ConfigStorage;
 import io.github.darkkronicle.advancedchatcore.interfaces.IChatMessageProcessor;
 import io.github.darkkronicle.advancedchatlog.config.ChatLogConfigStorage;
 import io.github.darkkronicle.advancedchatlog.gui.ChatLogScreen;
@@ -17,6 +19,7 @@ import io.github.darkkronicle.advancedchatlog.util.LogChatMessage;
 import io.github.darkkronicle.advancedchatlog.util.LogChatMessageSerializer;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,6 +30,8 @@ import net.minecraft.client.gui.screen.Screen;
 public class ChatLogData implements IChatMessageProcessor {
 
     private static final ChatLogData INSTANCE = new ChatLogData();
+    @Getter
+    private static boolean loading = false;
 
     @Getter private List<LogChatMessage> messages = new ArrayList<>();
 
@@ -52,6 +57,9 @@ public class ChatLogData implements IChatMessageProcessor {
 
     @Override
     public void onMessageUpdate(ChatMessage message, UpdateType type) {
+        if (loading) {
+            return;
+        }
         if (type != UpdateType.NEW) {
             return;
         }
@@ -63,13 +71,22 @@ public class ChatLogData implements IChatMessageProcessor {
         }
     }
 
+    /**
+     * Method that AdvancedChatCore uses to clear. We can stop clearing from there if we want.
+     */
+    public void normalClear() {
+        if (!ChatLogConfigStorage.General.ONLY_MANUAL_CLEAR.config.getBooleanValue()) {
+            clear();
+        }
+    }
+
     public void clear() {
         // If someone wants their messages gone, lets respect that.
         messages.clear();
     }
 
     public JsonArray toJson() {
-        int lines = ChatLogConfigStorage.General.STORED_LINES.config.getIntegerValue();
+        int lines = ChatLogConfigStorage.General.SAVED_LINES.config.getIntegerValue();
         LogChatMessageSerializer serializer = new LogChatMessageSerializer();
         List<LogChatMessage> messages = new ArrayList<>();
         for (int i = 0; i < lines && i < ChatLogData.getInstance().getMessages().size(); i++) {
@@ -87,6 +104,7 @@ public class ChatLogData implements IChatMessageProcessor {
     }
 
     public void load(JsonArray arr) {
+        loading = true;
         messages.clear();
         LogChatMessageSerializer serializer = new LogChatMessageSerializer();
 
@@ -101,5 +119,19 @@ public class ChatLogData implements IChatMessageProcessor {
                 err.printStackTrace();
             }
         }
+        for (int i = Math.min(ChatLogConfigStorage.General.RELOAD_LINES.config.getIntegerValue() - 1, messages.size() - 1); i >= 0; i--) {
+            ChatHistory.getInstance().add(messages.get(i).getMessage());
+        }
+        loading = false;
     }
+
+    public LogChatMessage getLogMessage(ChatMessage message) {
+        for (LogChatMessage log : messages) {
+            if (log.getMessage().getUuid().equals(message.getUuid())) {
+                return log;
+            }
+        }
+        return null;
+    }
+
 }
