@@ -17,7 +17,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
@@ -38,13 +37,12 @@ public class LogChatMessageSerializer implements IJsonSave<LogChatMessage> {
         return style;
     }
 
-    private LiteralText transfer(Text text) {
+    private Text transfer(Text text) {
         // Using the built in serializer LiteralText is required
-        LiteralText base = new LiteralText("");
+        Text base = Text.empty();
         for (Text t : text.getSiblings()) {
-            LiteralText newT = new LiteralText(t.getString());
-            newT.setStyle(cleanStyle(t.getStyle()));
-            base.append(newT);
+            Text newT = Text.literal(t.getString()).fillStyle(cleanStyle(t.getStyle()));
+            base.getSiblings().add(newT);
         }
         return base;
     }

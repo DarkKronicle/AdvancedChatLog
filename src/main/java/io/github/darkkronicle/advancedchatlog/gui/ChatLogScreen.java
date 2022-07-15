@@ -16,10 +16,7 @@ import io.github.darkkronicle.advancedchatcore.chat.ChatMessage;
 import io.github.darkkronicle.advancedchatcore.config.ConfigStorage;
 import io.github.darkkronicle.advancedchatcore.gui.ContextMenu;
 import io.github.darkkronicle.advancedchatcore.util.Colors;
-import io.github.darkkronicle.advancedchatcore.util.EasingMethod;
 import io.github.darkkronicle.advancedchatcore.util.FindType;
-import io.github.darkkronicle.advancedchatcore.util.FluidText;
-import io.github.darkkronicle.advancedchatcore.util.RawText;
 import io.github.darkkronicle.advancedchatcore.util.SearchUtils;
 import io.github.darkkronicle.advancedchatlog.AdvancedChatLog;
 import io.github.darkkronicle.advancedchatlog.ChatLogData;
@@ -192,11 +189,10 @@ public class ChatLogScreen extends GuiBase {
                 }
             } catch (PatternSyntaxException e) {
                 sorted.clear();
-                FluidText text = new FluidText(RawText.withStyle(
-                        StringUtils.translate("advancedchatlog.message.regexerror"),
-                        Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED)))
-                );
-                text.append(RawText.withColor(" " + e.getDescription(), Colors.getInstance().getColorOrWhite("gray")));
+                Text text = Text.literal(
+                        StringUtils.translate("advancedchatlog.message.regexerror")).fillStyle(
+                        Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED)));
+                text.getSiblings().add(Text.literal(" " + e.getDescription()).fillStyle(Style.EMPTY.withColor(Colors.getInstance().getColorOrWhite("gray").color())));
                 ChatMessage message = ChatMessage.builder().displayText(text).originalText(text).build();
                 sorted.add(new LogChatMessage(message));
                 break;
@@ -209,10 +205,9 @@ public class ChatLogScreen extends GuiBase {
         // Don't want jank
         messages = new ArrayList<>(messages);
         if (messages.isEmpty()) {
-            Text text = RawText.withStyle(
-                    StringUtils.translate("advancedchatlog.message.none"),
-                    Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED))
-            );
+            Text text = Text.literal(
+                    StringUtils.translate("advancedchatlog.message.none")
+            ).fillStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED)));
             messages.add(new LogChatMessage(ChatMessage.builder().displayText(text).originalText(text).build()));
         }
         renderLines = new ArrayList<>();
@@ -313,32 +308,34 @@ public class ChatLogScreen extends GuiBase {
         LinkedHashMap<Text, ContextMenu.ContextConsumer> actions = new LinkedHashMap<>();
         message = getMessage(mouseX, mouseY);
         if (message != null) {
-            FluidText data = new FluidText();
+            Text data = Text.empty();
             try {
-                data.append(
-                        RawText.withFormatting(message.getMessage().getTime().format(DateTimeFormatter.ofPattern(ConfigStorage.General.TIME_FORMAT.config.getStringValue())), Formatting.AQUA
-                    ));
+                data.getSiblings().add(
+                        Text.literal(
+                                message.getMessage().getTime().format(DateTimeFormatter.ofPattern(ConfigStorage.General.TIME_FORMAT.config.getStringValue()))
+                                ).fillStyle(Style.EMPTY.withFormatting(Formatting.AQUA))
+                    );
             } catch (IllegalArgumentException e) {
                 AdvancedChatLog.LOGGER.log(Level.WARN, "Can't format time for context menu!", e);
             }
             if (message.getMessage().getOwner() != null) {
-                data.append(RawText.withFormatting(" - ", Formatting.GRAY));
+                data.getSiblings().add(Text.literal(" - ").fillStyle(Style.EMPTY.withFormatting(Formatting.GRAY)));
                 if (message.getMessage().getOwner().getEntry().getDisplayName() != null) {
-                    data.append(new FluidText(message.getMessage().getOwner().getEntry().getDisplayName()));
+                    data.getSiblings().add(message.getMessage().getOwner().getEntry().getDisplayName());
                 } else {
-                    data.append(RawText.withStyle(message.getMessage().getOwner().getEntry().getProfile().getName(), Style.EMPTY));
+                    data.getSiblings().add(Text.literal(message.getMessage().getOwner().getEntry().getProfile().getName()));
                 }
             }
             if (!data.getString().isBlank())  {
                 actions.put(data, (x, y) -> {
                 });
             }
-            actions.put(RawText.withStyle(StringUtils.translate("advancedchatlog.context.copy"), Style.EMPTY), (x, y) -> {
+            actions.put(Text.literal(StringUtils.translate("advancedchatlog.context.copy")), (x, y) -> {
                 MinecraftClient.getInstance().keyboard.setClipboard(message.getMessage().getOriginalText().getString());
                 InfoUtils.printActionbarMessage("advancedchatlog.context.copied");
             });
         }
-        actions.put(RawText.withStyle(StringUtils.translate("advancedchatlog.context.clearallmessages"), Style.EMPTY), (x, y) -> {
+        actions.put(Text.literal(StringUtils.translate("advancedchatlog.context.clearallmessages")), (x, y) -> {
             ChatLogData.getInstance().clear();
             setLines(ChatLogData.getInstance().getMessages());
         });
