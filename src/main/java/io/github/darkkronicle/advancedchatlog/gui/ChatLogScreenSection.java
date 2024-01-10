@@ -19,6 +19,7 @@ import io.github.darkkronicle.advancedchatlog.AdvancedChatLog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -38,5 +39,10 @@ public class ChatLogScreenSection extends AdvancedChatScreenSection {
                         (button) -> GuiBase.openGui(new ChatLogScreen())
                 )
         );
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+
     }
 }
