@@ -52,8 +52,9 @@ public class LogChatMessageSerializer implements IJsonSave<LogChatMessage> {
         LocalDateTime dateTime = LocalDateTime.from(formatter.parse(obj.get("time").getAsString()));
         LocalDate date = dateTime.toLocalDate();
         LocalTime time = dateTime.toLocalTime();
-        Text display = Text.Serializer.fromJson(obj.get("display"));
-        Text original = Text.Serializer.fromJson(obj.get("original"));
+
+        Text display = Text.Serialization.fromJson(obj.get("display").getAsString());
+        Text original = Text.Serialization.fromJson(obj.get("original").getAsString());
         int stacks = obj.get("stacks").getAsByte();
         ChatMessage message =
                 ChatMessage.builder()
@@ -72,8 +73,8 @@ public class LogChatMessageSerializer implements IJsonSave<LogChatMessage> {
         LocalDateTime dateTime = LocalDateTime.of(message.getDate(), chat.getTime());
         json.addProperty("time", formatter.format(dateTime));
         json.addProperty("stacks", chat.getStacks());
-        json.add("display", Text.Serializer.toJsonTree(transfer(chat.getDisplayText())));
-        json.add("original", Text.Serializer.toJsonTree(transfer(chat.getOriginalText())));
+        json.add("display", Text.Serialization.toJsonTree(transfer(chat.getDisplayText())));
+        json.add("original", Text.Serialization.toJsonTree(transfer(chat.getOriginalText())));
         return json;
     }
 }
