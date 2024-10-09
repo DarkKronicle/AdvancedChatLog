@@ -22,22 +22,22 @@ import io.github.darkkronicle.advancedchatlog.AdvancedChatLog;
 import io.github.darkkronicle.advancedchatlog.ChatLogData;
 import io.github.darkkronicle.advancedchatlog.config.ChatLogConfigStorage;
 import io.github.darkkronicle.advancedchatlog.util.LogChatMessage;
-
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import org.apache.logging.log4j.Level;
+
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 @Environment(EnvType.CLIENT)
 public class ChatLogScreen extends GuiBase {
@@ -120,7 +120,9 @@ public class ChatLogScreen extends GuiBase {
                 12,
                 textRenderer,
                 (textFieldRunnable -> {
-                    client.player.sendChatMessage(textFieldRunnable.getText());
+                    if (client.player != null) {
+                        client.player.sendMessage(Text.of(textFieldRunnable.getText()));
+                    }
                     textFieldRunnable.setText("");
                 })
         );
@@ -244,20 +246,20 @@ public class ChatLogScreen extends GuiBase {
     }
 
     @Override
-    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta) {
-        if (super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta)) {
+    public boolean onMouseScrolled(int mouseX, int mouseY, double horizontalAmount, double verticalAmount) {
+        if (super.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
             return true;
         }
         // Update the scroll variables
-        scrollEnd = currentScroll + mouseWheelDelta * 10 * ChatLogConfigStorage.General.SCROLL_MULTIPLIER.config.getDoubleValue();
+        scrollEnd = currentScroll + verticalAmount * 10 * ChatLogConfigStorage.General.SCROLL_MULTIPLIER.config.getDoubleValue();
         scrollStart = currentScroll;
         lastScrollTime = Util.getMeasuringTimeMs();
         return true;
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+        super.render(context, mouseX, mouseY, partialTicks);
         updateScroll();
         int height = client.getWindow().getScaledHeight();
         int width = client.getWindow().getScaledWidth();
@@ -281,8 +283,8 @@ public class ChatLogScreen extends GuiBase {
                 break;
             }
             ChatMessage.AdvancedChatLine line = renderLines.get(i);
-            textRenderer.drawWithShadow(
-                    matrixStack,
+            context.drawTextWithShadow(
+                    textRenderer,
                     line.getText(),
                     10,
                     height - y - 40 - fontHeight,
@@ -290,17 +292,16 @@ public class ChatLogScreen extends GuiBase {
             y += lineHeight;
         }
         ScissorUtil.resetScissor();
-        drawCenteredText(
-                matrixStack,
+        context.drawCenteredTextWithShadow(
                 textRenderer,
                 (scrollLine + 1) + "/" + renderLines.size(),
                 width / 2,
                 height - 28,
                 Colors.getInstance().getColorOrWhite("white").color()
         );
-        renderTextHoverEffect(matrixStack, getHoverStyle(mouseX, mouseY), mouseX, mouseY);
+        context.drawHoverEvent(textRenderer, getHoverStyle(mouseX, mouseY), mouseX, mouseY);
         if (menu != null) {
-            menu.render(mouseX, mouseY, true, matrixStack);
+            menu.render(mouseX, mouseY, true, context);
         }
     }
 
